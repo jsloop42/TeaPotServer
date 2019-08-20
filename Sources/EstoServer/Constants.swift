@@ -7,13 +7,14 @@
 
 import Foundation
 
-typealias Const = Constants
+public typealias Const = Constants
 
-struct Constants {
-    static let host = "0.0.0.0"
+public struct Constants {
+    static let host = "::1"
     static let port = 2019
     static let pubDir = "/opt/public/"
     static let serverName = "EstoServer"
+    static let jsonMimeType = "application/json"
 
     static let samplePemCert = """
 -----BEGIN CERTIFICATE-----
@@ -66,3 +67,8 @@ ahwyQwRg2oQ2rBrBevgOKFEuIV62WfDYXi8SlT8QaZpTt2r4PYt4
 -----END RSA PRIVATE KEY-----
 """
 }
+
+public enum AppError: Error {
+    case dataError
+}
+
