@@ -10,8 +10,9 @@ import Foundation
 public typealias Const = Constants
 
 public struct Constants {
-    static let host = "::1"
-    static let port = 2019
+    static let host = "localhost"
+    static let httpPort = 8080
+    static let httpsPort = 4430
     static let pubDir = "/opt/public/"
     static let serverName = "EstoServer"
     static let jsonMimeType = "application/json"
