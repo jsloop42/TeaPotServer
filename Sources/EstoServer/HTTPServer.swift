@@ -12,132 +12,101 @@ import NIOHTTP1
 import NIOHTTP2
 import NIOFoundationCompat
 
-public struct StreamContext {
-    public var streamID: Int
+internal final class HTTP2Handler<Responder: HTTPResponder>: ChannelInboundHandler {
+    internal typealias InboundIn = HTTPServerRequestPart
+    internal typealias OutboundOut = HTTPServerResponsePart
+    private let httpUtils = HTTPUtils.shared
+    private let responder: Responder
+    private var isKeepAlive: Bool = false
+    private var request: HTTPServerRequest?
 
-    init(streamID: Int) {
-        self.streamID = streamID
+    internal init(responder: Responder) {
+        self.responder = responder
+    }
+
+    internal func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+        let reqPart = self.unwrapInboundIn(data)
+        switch reqPart {
+        case .head(let reqHead):
+            print("req: ", reqHead)
+            self.isKeepAlive = reqHead.isKeepAlive
+            var contentLength: Int = 0  // The request body content length if present
+            if let length = reqHead.headers["content-length"].first { contentLength = Int(length) ?? 0 }
+            if contentLength > Const._10MB {  // Maximum request body size is limited to 10MB
+                context.close(promise: nil)
+            }
+            var body: ByteBuffer? = nil
+            if contentLength > 0 { body = context.channel.allocator.buffer(capacity: contentLength) }
+            self.request = HTTPServerRequest(eventLoop: context.eventLoop, header: reqHead, bodyBuffer: body)
+        case .body(let data):
+            // Append new data to the body buffer
+            data.withUnsafeReadableBytes { buff -> Void in
+                self.request?.bodyBuffer?.writeBytes(buff)
+            }
+        case .end:
+            guard let request = self.request else { return }
+            let channel = context.channel
+            DispatchQueue.global().async {
+                let response: EventLoopFuture<HTTPServerResponse> = self.responder.respond(to: request).flatMapError { (err) -> EventLoopFuture<HTTPServerResponse> in
+                    return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .internalServerError, body: HTTPBody(text: Message.internalServerError)))
+                }
+                self.request = nil
+                self.writeResponse(response, to: channel)
+            }
+        }
+    }
+
+    @discardableResult
+    private func writeResponse(_ response: EventLoopFuture<HTTPServerResponse>, to channel: Channel) -> EventLoopFuture<Void> {
+        let responded: EventLoopFuture<Void> = response.map { response -> Void in
+            var header = response.header
+            header.headers.remove(name: "content-length")
+            if let body = response.body {
+                let buffer = body.buffer
+                header.headers.add(name: "content-length", value: String(buffer.writerIndex))
+                if let mimeType = body.mimeType {
+                    header.headers.remove(name: "content-type")
+                    header.headers.add(name: "content-type", value: mimeType)
+                    _ = self.httpUtils.writeHeader(header: header, to: channel)
+                    _ = self.httpUtils.writeBody(buffer: buffer, to: channel)
+                }
+            } else {
+                _ = self.httpUtils.writeHeader(header: header, to: channel)
+            }
+        }.flatMap { _ -> EventLoopFuture<Void> in
+            return channel.writeAndFlush(HTTPServerResponsePart.end(nil))
+        }
+        responded.whenComplete { _ in
+            if !self.isKeepAlive { _ = channel.close() }
+        }
+        return responded
+    }
+
+    internal func channelReadComplete(context: ChannelHandlerContext) {
+        context.flush()
     }
 }
 
-public class HTTP2Handler: ChannelInboundHandler {
-    public typealias InboundIn = HTTPServerRequestPart
-    public typealias OutboundOut = HTTPServerResponsePart
-    private var router: Router = Router()
+internal final class HTTPHandler: ChannelInboundHandler {
+    internal typealias InboundIn = HTTPServerRequestPart
+    internal typealias OutboundOut = HTTPServerResponsePart
+    private let httpUtils = HTTPUtils.shared
 
-    public func getHeaders(contentLength: Int, context: StreamContext) -> HTTPHeaders {
-        var headers = HTTPHeaders()
-        headers.add(name: "content-length", value: String(contentLength))
-        headers.add(name: "x-stream-id", value: String(context.streamID))
-        headers.add(name: "server", value: Const.serverName)
-        return headers
-    }
-
-    public func sendHeader(status: HTTPResponseStatus, headers: HTTPHeaders, to channel: Channel, context: StreamContext) -> EventLoopFuture<Void> {
-        let head = HTTPResponseHead(version: .init(major: 2, minor: 0), status: status, headers: headers)
-        let part = HTTPServerResponsePart.head(head)
-        return channel.writeAndFlush(part)
-    }
-
-    private func sendData(_ data: Data, to channel: Channel, context: StreamContext) -> EventLoopFuture<Void> {
-        let headers = self.getHeaders(contentLength: data.count, context: context)
-        _ = self.sendHeader(status: .ok, headers: headers, to: channel, context: context)
-        var buffer = channel.allocator.buffer(capacity: data.count)
-        buffer.writeBytes(data)
-        let part = HTTPServerResponsePart.body(.byteBuffer(buffer))
-        return channel.writeAndFlush(part)
-    }
-
-    public func send(_ string: String, to channel: Channel, context: StreamContext) -> EventLoopFuture<Void> {
-        if let data = string.data(using: .utf8) {
-            return self.sendData(data, to: channel, context: context)
-        }
-        return sendErrorResponse("Internal server error", to: channel, context: context)
-    }
-
-    public func handleError(_ error: Error, in channel: Channel, context: StreamContext) {
-        print("Error: \(error)")
-    }
-
-    public func sendErrorResponse(_ msg: String, to channel: Channel, context: StreamContext) -> EventLoopFuture<Void> {
-        var str = msg
-        return self.sendData(Data(bytes: &str, count: str.count), to: channel, context: context)
-    }
-
-    public func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+    internal func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         let reqPart = self.unwrapInboundIn(data)
         switch reqPart {
-        case .head(let header):
-            print("req: ", header)
-            // The event loop tick which represents real workloads in SwiftNIO, which will not re-entrantly write their response frames.
-            context.eventLoop.execute {
-                context.channel.getOption(HTTP2StreamChannelOptions.streamID).flatMap { streamID -> EventLoopFuture<Void> in
-                    return self.send("hello world new ok", to: context.channel, context: StreamContext(streamID: Int(streamID)))
-                }.whenComplete({ _ in
-                    _ = context.channel.writeAndFlush(self.wrapOutboundOut(HTTPServerResponsePart.end(nil)))
-                    context.close(promise: nil)
+        case .head(let reqHead):
+            print("req: ", reqHead)
+            var headers = httpUtils.getHeaders(contentLength: 0)
+            headers.add(name: "location", value: "https://[\(Const.host)]:\(Const.httpsPort)")  // TODO: change it to IPv4 mode
+            let channel = context.channel
+            DispatchQueue.global().async {
+                self.httpUtils.sendHeader(status: .permanentRedirect, headers: headers, to: channel).flatMap({ (Void) -> EventLoopFuture<Void> in
+                    return channel.writeAndFlush(HTTPServerResponsePart.end(nil))
+                }).whenComplete({ _ in
+                    _ = channel.close()
                 })
             }
-        case .body, .end:
-            break
-        }
-    }
-}
-
-public class HTTPHandler: ChannelInboundHandler {
-    public typealias InboundIn = HTTPServerRequestPart
-    public typealias OutboundOut = HTTPServerResponsePart
-
-    public func getHeaders(contentLength: Int, context: StreamContext) -> HTTPHeaders {
-        var headers = HTTPHeaders()
-        headers.add(name: "content-length", value: String(contentLength))
-        headers.add(name: "x-stream-id", value: String(context.streamID))
-        headers.add(name: "server", value: Const.serverName)
-        headers.add(name: "location", value: "https://\(Const.host):\(Const.httpsPort)")
-        return headers
-    }
-
-    public func sendHeader(status: HTTPResponseStatus, headers: HTTPHeaders, to channel: Channel, context: StreamContext) -> EventLoopFuture<Void> {
-        let head = HTTPResponseHead(version: .init(major: 1, minor: 1), status: status, headers: headers)
-        let part = HTTPServerResponsePart.head(head)
-        return channel.writeAndFlush(part)
-    }
-
-    private func sendData(_ data: Data, to channel: Channel, context: StreamContext) -> EventLoopFuture<Void> {
-        let headers = self.getHeaders(contentLength: data.count, context: context)
-        _ = self.sendHeader(status: .permanentRedirect, headers: headers, to: channel, context: context)
-        var buffer = channel.allocator.buffer(capacity: data.count)
-        buffer.writeBytes(data)
-        let part = HTTPServerResponsePart.body(.byteBuffer(buffer))
-        return channel.writeAndFlush(part)
-    }
-
-    public func send(_ string: String, to channel: Channel, context: StreamContext) -> EventLoopFuture<Void> {
-        if let data = string.data(using: .utf8) {
-            return self.sendData(data, to: channel, context: context)
-        }
-        return sendErrorResponse("Internal server error", to: channel, context: context)
-    }
-
-    public func handleError(_ error: Error, in channel: Channel, context: StreamContext) {
-        print("Error: \(error)")
-    }
-
-    public func sendErrorResponse(_ msg: String, to channel: Channel, context: StreamContext) -> EventLoopFuture<Void> {
-        var str = msg
-        return self.sendData(Data(bytes: &str, count: str.count), to: channel, context: context)
-    }
-
-
-    public func channelRead(context: ChannelHandlerContext, data: NIOAny) {
-        let reqPart = self.unwrapInboundIn(data)
-        switch reqPart {
-        case .head(let header):
-            print("req: ", header)
-            return self.send("hello world new ok", to: context.channel, context: StreamContext(streamID: Int(1))).whenComplete({ _ in
-                _ = context.channel.writeAndFlush(self.wrapOutboundOut(HTTPServerResponsePart.end(nil)))
-                context.close(promise: nil)
-            })
         case .body, .end:
             break
         }
@@ -166,14 +135,12 @@ public class HTTPServer {
         defer { try! group.syncShutdownGracefully() }
 
         let bootstrapHTTP1 = ServerBootstrap(group: group)
-            // Specify backlog and enable SO_REUSEADDR for the server itself
             .serverChannelOption(ChannelOptions.backlog, value: 256)
             .serverChannelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
-            // Set the handlers that are applied to the accepted Channels
-            .childChannelInitializer({ channel in
+            .childChannelInitializer({ channel in  // Set the handlers that are applied to the accepted Channels
                 channel.pipeline.addHandler(BackPressureHandler()).flatMap({ _ in
                     // Add SSL handler because HTTP/2 is almost always spoken over TLS.
-                    channel.pipeline.configureHTTPServerPipeline().flatMap({ () -> EventLoopFuture<Void> in
+                    channel.pipeline.configureHTTPServerPipeline(withErrorHandling: true).flatMap({ (_) -> EventLoopFuture<Void> in
                         return channel.pipeline.addHandler(HTTPHandler())
                     }).flatMap({ () -> EventLoopFuture<Void> in
                         return channel.pipeline.addHandler(ErrorHandler())
@@ -187,24 +154,21 @@ public class HTTPServer {
             .childChannelOption(ChannelOptions.recvAllocator, value: AdaptiveRecvByteBufferAllocator())  // Adjust the buffer size based on actual traffic
 
         let bootstrapHTTP2 = ServerBootstrap(group: group)
-            // Specify backlog and enable SO_REUSEADDR for the server itself
-            .serverChannelOption(ChannelOptions.backlog, value: 256)
-            .serverChannelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
-            // Set the handlers that are applied to the accepted Channels
-            .childChannelInitializer({ channel in
+            .serverChannelOption(ChannelOptions.backlog, value: 256)  // The number of TCP sockets waiting to be accepted for processing at a given time
+            .serverChannelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)  // Allow reuse of the IP address and port so that multiple threads can receive clients
+            .childChannelInitializer({ channel in  // Set the handlers that are applied to the accepted Channels
                 channel.pipeline.addHandler(try! NIOSSLServerHandler(context: sslContext)).flatMap { _ in
                     // Configure the HTTP/2 pipeline.
                     channel.configureHTTP2Pipeline(mode: .server) { streamChannel, streamID -> EventLoopFuture<Void> in
-                        // For every HTTP/2 stream that the client opens, put in the `HTTP2ToHTTP1ServerCodec` which transforms the HTTP/2 frames to the HTTP/1
-                        // messages from the `NIOHTTP1` module.
+                        // For every HTTP/2 stream that the client opens, `HTTP2ToHTTP1ServerCodec` transforms the HTTP/2 frames to the HTTP/1 messages from the `NIOHTTP1` module.
                         streamChannel.pipeline.addHandler(HTTP2ToHTTP1ServerCodec(streamID: streamID)).flatMap { _ in
-                            streamChannel.pipeline.addHandler(HTTP2Handler())  // Add the server
-                            }.flatMap { () -> EventLoopFuture<Void> in
-                                streamChannel.pipeline.addHandler(ErrorHandler())
+                            streamChannel.pipeline.addHandler(HTTP2Handler(responder: APIResponder()))  // Add the server
+                        }.flatMap { () -> EventLoopFuture<Void> in
+                            streamChannel.pipeline.addHandler(ErrorHandler())
                         }
                     }
-                    }.flatMap { (_: HTTP2StreamMultiplexer) in
-                        return channel.pipeline.addHandler(ErrorHandler())
+                }.flatMap { (_: HTTP2StreamMultiplexer) in
+                    return channel.pipeline.addHandler(ErrorHandler())
                 }
             })
             // Enable TCP_NODELAY and SO_REUSEADDR for the accepted Channels

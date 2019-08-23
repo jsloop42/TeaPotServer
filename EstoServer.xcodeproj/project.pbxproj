@@ -21,8 +21,11 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		9E3C789B231042220059866E /* APIResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3C789A231042220059866E /* APIResponder.swift */; };
+		9E4C912F230F1D91002DF310 /* HTTPUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4C912E230F1D91002DF310 /* HTTPUtils.swift */; };
 		9EE41806230C2C9A007D0437 /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE41805230C2C9A007D0437 /* HTTPServer.swift */; };
 		9EE41808230C3879007D0437 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE41807230C3879007D0437 /* Constants.swift */; };
+		9EE4180C230C4886007D0437 /* HTTPModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE4180B230C4886007D0437 /* HTTPModels.swift */; };
 		OBJ_1000 /* aesv8-armx64.linux.aarch64.S in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_260 /* aesv8-armx64.linux.aarch64.S */; };
 		OBJ_1001 /* armv4-mont.ios.arm.S in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_261 /* armv4-mont.ios.arm.S */; };
 		OBJ_1002 /* armv4-mont.linux.arm.S in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_262 /* armv4-mont.linux.arm.S */; };
@@ -1546,9 +1549,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9E3C789A231042220059866E /* APIResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponder.swift; sourceTree = "<group>"; };
+		9E4C912E230F1D91002DF310 /* HTTPUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPUtils.swift; sourceTree = "<group>"; };
 		9EE41805230C2C9A007D0437 /* HTTPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPServer.swift; sourceTree = "<group>"; };
 		9EE41807230C3879007D0437 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9EE41809230C3DB6007D0437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9EE4180B230C4886007D0437 /* HTTPModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPModels.swift; sourceTree = "<group>"; };
 		"EstoServer::EstoServer::Product" /* EstoServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = EstoServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		"EstoServer::EstoServerTests::Product" /* EstoServerTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = EstoServerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_100 /* WatermarkedFlowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkedFlowController.swift; sourceTree = "<group>"; };
@@ -2526,6 +2532,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9E4C912B230F1CBA002DF310 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		9EE4180A230C4874007D0437 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9EE4180B230C4886007D0437 /* HTTPModels.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		OBJ_10 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -3582,7 +3603,7 @@
 			path = x509;
 			sourceTree = "<group>";
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				9EE41809230C3DB6007D0437 /* Info.plist */,
@@ -3592,7 +3613,6 @@
 				OBJ_14 /* Dependencies */,
 				OBJ_834 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_521 /* x509v3 */ = {
@@ -4162,8 +4182,12 @@
 		OBJ_8 /* EstoServer */ = {
 			isa = PBXGroup;
 			children = (
+				9EE4180A230C4874007D0437 /* Model */,
+				9E4C912B230F1CBA002DF310 /* Service */,
+				9E3C789A231042220059866E /* APIResponder.swift */,
 				9EE41807230C3879007D0437 /* Constants.swift */,
 				9EE41805230C2C9A007D0437 /* HTTPServer.swift */,
+				9E4C912E230F1D91002DF310 /* HTTPUtils.swift */,
 				OBJ_9 /* main.swift */,
 			);
 			name = EstoServer;
@@ -4993,7 +5017,7 @@
 				English,
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_834 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -5086,8 +5110,11 @@
 			buildActionMask = 0;
 			files = (
 				9EE41806230C2C9A007D0437 /* HTTPServer.swift in Sources */,
+				9EE4180C230C4886007D0437 /* HTTPModels.swift in Sources */,
+				9E4C912F230F1D91002DF310 /* HTTPUtils.swift in Sources */,
 				OBJ_1444 /* main.swift in Sources */,
 				9EE41808230C3879007D0437 /* Constants.swift in Sources */,
+				9E3C789B231042220059866E /* APIResponder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

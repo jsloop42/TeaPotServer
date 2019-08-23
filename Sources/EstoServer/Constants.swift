@@ -10,12 +10,12 @@ import Foundation
 public typealias Const = Constants
 
 public struct Constants {
-    static let host = "localhost"
+    static let host = "::1"
     static let httpPort = 8080
     static let httpsPort = 4430
     static let pubDir = "/opt/public/"
     static let serverName = "EstoServer"
-    static let jsonMimeType = "application/json"
+    static let _10MB = 10_485_760
 
     static let samplePemCert = """
 -----BEGIN CERTIFICATE-----
@@ -73,3 +73,11 @@ public enum AppError: Error {
     case dataError
 }
 
+public enum MimeType: String {
+    case json = "application/json"
+    case plainText = "text/plain"
+}
+
+public struct Message {
+    public static let internalServerError = "Internal Server Error"
+}
