@@ -13,7 +13,32 @@ import NIOFoundationCompat
 
 struct APIResponder: HTTPResponder {
     func respond(to request: HTTPServerRequest) -> EventLoopFuture<HTTPServerResponse> {
-        let body = HTTPBody(text: "hello world")
-        return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .ok, body: body))
+        let header = request.header
+        switch header.method {
+        case .GET:
+            switch header.uri {
+            case "/":
+                Log?.debug("Request received: GET /")
+                let body = HTTPBody(text: "GET / -> hello world")
+                return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .ok, body: body))
+            case "/health":
+                Log?.debug("Request received: GET /health")
+                let body = HTTPBody(text: "GET /health -> ok")
+                return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .ok, body: body))
+            default:
+                break
+            }
+            break
+        case .POST:
+            break
+        case .PUT:
+            break
+        case .DELETE:
+            break
+        default:
+            break
+        }
+        let body = HTTPBody(text: "Route not found")
+        return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .notFound, body: body))
     }
 }

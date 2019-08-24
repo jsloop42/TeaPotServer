@@ -22,7 +22,12 @@
 
 /* Begin PBXBuildFile section */
 		9E3C789B231042220059866E /* APIResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3C789A231042220059866E /* APIResponder.swift */; };
+		9E42AFCA2310F96D009D52CB /* FileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E42AFC92310F96D009D52CB /* FileIO.swift */; };
+		9E42AFCC23111C73009D52CB /* FileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E42AFC92310F96D009D52CB /* FileIO.swift */; };
+		9E42AFCD23111D69009D52CB /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E783B8F231079B600817B45 /* LoggingService.swift */; };
+		9E42AFCE23112473009D52CB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE41807230C3879007D0437 /* Constants.swift */; };
 		9E4C912F230F1D91002DF310 /* HTTPUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4C912E230F1D91002DF310 /* HTTPUtils.swift */; };
+		9E783B90231079B600817B45 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E783B8F231079B600817B45 /* LoggingService.swift */; };
 		9EE41806230C2C9A007D0437 /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE41805230C2C9A007D0437 /* HTTPServer.swift */; };
 		9EE41808230C3879007D0437 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE41807230C3879007D0437 /* Constants.swift */; };
 		9EE4180C230C4886007D0437 /* HTTPModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE4180B230C4886007D0437 /* HTTPModels.swift */; };
@@ -1550,7 +1555,11 @@
 
 /* Begin PBXFileReference section */
 		9E3C789A231042220059866E /* APIResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponder.swift; sourceTree = "<group>"; };
+		9E42AFC72310F893009D52CB /* priv.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = priv.pem; sourceTree = "<group>"; };
+		9E42AFC82310F893009D52CB /* cacert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cacert.pem; sourceTree = "<group>"; };
+		9E42AFC92310F96D009D52CB /* FileIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileIO.swift; sourceTree = "<group>"; };
 		9E4C912E230F1D91002DF310 /* HTTPUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPUtils.swift; sourceTree = "<group>"; };
+		9E783B8F231079B600817B45 /* LoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingService.swift; sourceTree = "<group>"; };
 		9EE41805230C2C9A007D0437 /* HTTPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPServer.swift; sourceTree = "<group>"; };
 		9EE41807230C3879007D0437 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9EE41809230C3DB6007D0437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2532,9 +2541,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9E42AFC62310F87E009D52CB /* Key */ = {
+			isa = PBXGroup;
+			children = (
+				9E42AFC82310F893009D52CB /* cacert.pem */,
+				9E42AFC72310F893009D52CB /* priv.pem */,
+			);
+			path = Key;
+			sourceTree = "<group>";
+		};
 		9E4C912B230F1CBA002DF310 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				9E783B8F231079B600817B45 /* LoggingService.swift */,
+				9E42AFC92310F96D009D52CB /* FileIO.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -4182,6 +4202,7 @@
 		OBJ_8 /* EstoServer */ = {
 			isa = PBXGroup;
 			children = (
+				9E42AFC62310F87E009D52CB /* Key */,
 				9EE4180A230C4874007D0437 /* Model */,
 				9E4C912B230F1CBA002DF310 /* Service */,
 				9E3C789A231042220059866E /* APIResponder.swift */,
@@ -5109,12 +5130,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				9E783B90231079B600817B45 /* LoggingService.swift in Sources */,
 				9EE41806230C2C9A007D0437 /* HTTPServer.swift in Sources */,
 				9EE4180C230C4886007D0437 /* HTTPModels.swift in Sources */,
 				9E4C912F230F1D91002DF310 /* HTTPUtils.swift in Sources */,
 				OBJ_1444 /* main.swift in Sources */,
 				9EE41808230C3879007D0437 /* Constants.swift in Sources */,
 				9E3C789B231042220059866E /* APIResponder.swift in Sources */,
+				9E42AFCA2310F96D009D52CB /* FileIO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5130,8 +5153,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				9E42AFCE23112473009D52CB /* Constants.swift in Sources */,
 				OBJ_1511 /* EstoServerTests.swift in Sources */,
 				OBJ_1512 /* XCTestManifests.swift in Sources */,
+				9E42AFCC23111C73009D52CB /* FileIO.swift in Sources */,
+				9E42AFCD23111D69009D52CB /* LoggingService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6774,7 +6800,6 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx @executable_path";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
@@ -6809,7 +6834,6 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx @executable_path";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
@@ -7749,7 +7773,7 @@
 					"SWIFT_PACKAGE=1",
 					"DEBUG=1",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "-DXcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -7774,7 +7798,7 @@
 					"$(inherited)",
 					"SWIFT_PACKAGE=1",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_SWIFT_FLAGS = "-DXcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

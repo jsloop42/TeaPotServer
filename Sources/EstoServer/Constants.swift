@@ -11,6 +11,7 @@ public typealias Const = Constants
 
 public struct Constants {
     static let host = "::1"
+    //static let host = "127.0.0.1"
     static let httpPort = 8080
     static let httpsPort = 4430
     static let pubDir = "/opt/public/"

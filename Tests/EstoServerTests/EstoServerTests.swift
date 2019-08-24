@@ -1,47 +1,27 @@
 import XCTest
 import class Foundation.Bundle
+import Logging
 
 final class EstoServerTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-
-        // Some of the APIs that we use below are available in macOS 10.13 and above.
-        guard #available(macOS 10.13, *) else {
-            return
+    private var isLoggerInitialized = false
+    private lazy var log: LoggingService = {
+        if !self.isLoggerInitialized {
+            _ = LoggingService.init(level: .debug)
         }
+        return Log!
+    }()
 
-        let fooBinary = productsDirectory.appendingPathComponent("EstoServer")
-
-        let process = Process()
-        process.executableURL = fooBinary
-
-        let pipe = Pipe()
-        process.standardOutput = pipe
-
-        try process.run()
-        process.waitUntilExit()
-
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)
-
-        XCTAssertEqual(output, "Hello, world!\n")
-    }
-
-    /// Returns path to the built products directory.
-    var productsDirectory: URL {
-      #if os(macOS)
-        for bundle in Bundle.allBundles where bundle.bundlePath.hasSuffix(".xctest") {
-            return bundle.bundleURL.deletingLastPathComponent()
-        }
-        fatalError("couldn't find the products directory")
-      #else
-        return Bundle.main.bundleURL
-      #endif
+    func testFileIO() {
+        var fileIO = FileIO()
+        //let name = String("\(UUID())".prefix(8)).lowercased()
+        //let fileUrl = URL(fileURLWithPath: "/var/tmp/estoserver/\(name)")
+//        XCTAssertFalse(fileIO.isFileExists(at: fileUrl))
+//        fileIO.createFileIfNotExists(fileUrl)
+//        XCTAssertTrue(fileIO.isFileExists(at: fileUrl))
+        fileIO.createFile(URL(fileURLWithPath: "/var/tmp/estoserver/testfile"))
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testFileIO", testFileIO),
     ]
 }

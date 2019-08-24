@@ -20,6 +20,6 @@ let package = Package(
             dependencies: ["NIO", "NIOHTTP1", "NIOHTTP2", "NIOTLS", "NIOSSL", "NIOFoundationCompat", "NIOWebSocket", "Logging", "Metrics"]),
         .testTarget(
             name: "EstoServerTests",
-            dependencies: ["EstoServer"]),
+            dependencies: ["EstoServer", "Logging"]),
     ]
 )

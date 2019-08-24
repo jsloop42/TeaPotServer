@@ -180,13 +180,13 @@ public class HTTPServer {
         do {
             let channel1 = try bootstrapHTTP1.bind(host: Const.host, port: Const.httpPort).wait()
             let channel2 = try bootstrapHTTP2.bind(host: Const.host, port: Const.httpsPort).wait()
-            print("Server started and listening on \(channel1.localAddress!)")
-            print("Server started and listening on \(channel2.localAddress!)")
+            Log?.info("Server started and listening on \(channel1.localAddress!)")
+            Log?.info("Server started and listening on \(channel2.localAddress!)")
             try channel1.closeFuture.wait()
             try channel2.closeFuture.wait()
-            print("Server closed")
+            Log?.info("Server closed")
         } catch let err {
-            print("Error: \(err)")
+            Log?.error("Error: \(err.localizedDescription)")
         }
     }
 }
@@ -195,7 +195,7 @@ final class ErrorHandler: ChannelInboundHandler {
     typealias InboundIn = Never
 
     func errorCaught(context: ChannelHandlerContext, error: Error) {
-        print("Server received error: \(error)")
+        Log?.error("Server received error: \(error)")
         context.close(promise: nil)
     }
 }
