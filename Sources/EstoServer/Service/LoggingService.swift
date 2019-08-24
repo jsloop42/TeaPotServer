@@ -22,8 +22,7 @@ public struct LoggingService {
     }
 
     init(level: Logger.Level) {
-        //self.init(level: level, handlers: [FileLogHandler(level: level), StreamLogHandler.standardOutput(label: "")])
-        self.init(level: level, handlers: [FileLogHandler(logLevel: level),
+        self.init(level: level, handlers: [PlainTextFileLogHandler(logLevel: level),
                                            StreamLogHandler.standardOutput(label: "com.estoapps.estoserver")])
     }
 
@@ -36,10 +35,12 @@ public struct LoggingService {
             let (k, v) = arg
             self.muxHandler[metadataKey: k] = Logger.MetadataValue(stringLiteral: v.description)
         }
+        self.metadata = self.muxHandler.metadata
     }
 
     public mutating func setMetadata(key: String, value: CustomStringConvertible) {
         self.muxHandler[metadataKey: key] = Logger.MetadataValue(stringLiteral: value.description)
+        self.metadata = self.muxHandler.metadata
     }
 
     public func log(level: Logger.Level,
@@ -62,7 +63,7 @@ public struct LoggingService {
     }
 }
 
-public struct FileLogHandler: LogHandler {
+public struct PlainTextFileLogHandler: LogHandler {
     public var logLevel: Logger.Level = .info
     public var metadata: Logger.Metadata = [:]
     public var logFileUrl: URL
@@ -100,6 +101,57 @@ public struct FileLogHandler: LogHandler {
             logMsg = "\(Utils.shared.localTimeToString()) [\(level)] \(file) \(function):\(line) \(message)"
         }
         self.fileIO.append(string: logMsg.appending("\n"))
+    }
+
+    public subscript(metadataKey key: String) -> Logger.Metadata.Value? {
+        get {
+            return self.metadata[key]
+        }
+        set(newValue) {
+            self.metadata[key] = newValue
+        }
+    }
+}
+
+public struct FoundationDBFileLogHandler: LogHandler {
+    public var logLevel: Logger.Level = .info
+    public var metadata: Logger.Metadata = [:]
+    public var dbUrl: String
+
+    public init(dbUrl: String, logLevel: Logger.Level) {
+        self.logLevel = logLevel
+        self.dbUrl = dbUrl
+    }
+
+    public init(dbUrl: String) {
+        self.dbUrl = dbUrl
+    }
+
+    public init(logLevel: Logger.Level) {
+        self.init(dbUrl: "mongo://127.0.0.1:27016", logLevel: logLevel)
+    }
+
+    public func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, file: String, function: String, line: UInt) {
+        let file: String = {
+            let fileComp = (file as NSString).lastPathComponent.split(separator: ".")
+            if fileComp.count >= 2 { return "\(fileComp[0]).\(fileComp[1])" }
+            return ""
+        }()
+        var logData = LogModel(message: message.description, correlationId: "")
+        logData.file = file
+        logData.function = function
+        logData.line = line
+        if let meta = metadata {
+            if let corrID = meta["correlationID"] {
+                logData.correlationId = corrID.description
+            }
+            let req = LogRequestData(method: meta["method"]?.description ?? "", uri: meta["uri"]?.description ?? "",
+                                     version: meta["version"]?.description ?? "", host: meta["host"]?.description ?? "",
+                                     userAgent: meta["userAgent"]?.description ?? "", acceptLanguage: meta["acceptLanguage"]?.description ?? "",
+                                     referrer: meta["referrer"]?.description ?? "", ip: meta["ip"]?.description ?? "")
+            logData.requestData = req
+        }
+        // TODO: write to fsdb
     }
 
     public subscript(metadataKey key: String) -> Logger.Metadata.Value? {

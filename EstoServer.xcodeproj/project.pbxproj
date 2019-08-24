@@ -30,6 +30,8 @@
 		9E783B90231079B600817B45 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E783B8F231079B600817B45 /* LoggingService.swift */; };
 		9E99C6F323116178003A23A1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E99C6F223116178003A23A1 /* Utils.swift */; };
 		9E99C6F42311617D003A23A1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E99C6F223116178003A23A1 /* Utils.swift */; };
+		9E99C6F623117152003A23A1 /* LogModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E99C6F523117152003A23A1 /* LogModel.swift */; };
+		9E99C6F823117BF7003A23A1 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E99C6F723117BF7003A23A1 /* PersistenceService.swift */; };
 		9EE41806230C2C9A007D0437 /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE41805230C2C9A007D0437 /* HTTPServer.swift */; };
 		9EE41808230C3879007D0437 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE41807230C3879007D0437 /* Constants.swift */; };
 		9EE4180C230C4886007D0437 /* HTTPModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE4180B230C4886007D0437 /* HTTPModels.swift */; };
@@ -1563,6 +1565,8 @@
 		9E4C912E230F1D91002DF310 /* HTTPUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPUtils.swift; sourceTree = "<group>"; };
 		9E783B8F231079B600817B45 /* LoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingService.swift; sourceTree = "<group>"; };
 		9E99C6F223116178003A23A1 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		9E99C6F523117152003A23A1 /* LogModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogModel.swift; sourceTree = "<group>"; };
+		9E99C6F723117BF7003A23A1 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
 		9EE41805230C2C9A007D0437 /* HTTPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPServer.swift; sourceTree = "<group>"; };
 		9EE41807230C3879007D0437 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9EE41809230C3DB6007D0437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2556,8 +2560,9 @@
 		9E4C912B230F1CBA002DF310 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				9E783B8F231079B600817B45 /* LoggingService.swift */,
 				9E42AFC92310F96D009D52CB /* FileIO.swift */,
+				9E783B8F231079B600817B45 /* LoggingService.swift */,
+				9E99C6F723117BF7003A23A1 /* PersistenceService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -2566,6 +2571,7 @@
 			isa = PBXGroup;
 			children = (
 				9EE4180B230C4886007D0437 /* HTTPModels.swift */,
+				9E99C6F523117152003A23A1 /* LogModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -5137,11 +5143,13 @@
 				9E783B90231079B600817B45 /* LoggingService.swift in Sources */,
 				9EE41806230C2C9A007D0437 /* HTTPServer.swift in Sources */,
 				9E99C6F323116178003A23A1 /* Utils.swift in Sources */,
+				9E99C6F823117BF7003A23A1 /* PersistenceService.swift in Sources */,
 				9EE4180C230C4886007D0437 /* HTTPModels.swift in Sources */,
 				9E4C912F230F1D91002DF310 /* HTTPUtils.swift in Sources */,
 				OBJ_1444 /* main.swift in Sources */,
 				9EE41808230C3879007D0437 /* Constants.swift in Sources */,
 				9E3C789B231042220059866E /* APIResponder.swift in Sources */,
+				9E99C6F623117152003A23A1 /* LogModel.swift in Sources */,
 				9E42AFCA2310F96D009D52CB /* FileIO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
