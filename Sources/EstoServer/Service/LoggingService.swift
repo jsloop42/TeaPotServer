@@ -23,7 +23,7 @@ public struct LoggingService {
 
     init(level: Logger.Level) {
         //self.init(level: level, handlers: [FileLogHandler(level: level), StreamLogHandler.standardOutput(label: "")])
-        self.init(level: level, handlers: [FileLogHandler(logFileUrl: URL(fileURLWithPath: "/var/tmp/estoserver/server.log"), logLevel: .debug),
+        self.init(level: level, handlers: [FileLogHandler(logLevel: level),
                                            StreamLogHandler.standardOutput(label: "com.estoapps.estoserver")])
     }
 
@@ -65,7 +65,7 @@ public struct LoggingService {
 public struct FileLogHandler: LogHandler {
     public var logLevel: Logger.Level = .info
     public var metadata: Logger.Metadata = [:]
-    public var logFileUrl: URL = URL(fileURLWithPath: "/var/tmp/server.log")
+    public var logFileUrl: URL
     private var fileIO: FileIO = FileIO()
 
     public init(logFileUrl: URL, logLevel: Logger.Level) {
@@ -76,6 +76,10 @@ public struct FileLogHandler: LogHandler {
 
     public init(logFileUrl: URL) {
         self.logFileUrl = logFileUrl
+    }
+
+    public init(logLevel: Logger.Level) {
+        self.init(logFileUrl: URL(fileURLWithPath: Const.logFilePath), logLevel: logLevel)
     }
 
     private mutating func bootstrap() {
@@ -91,9 +95,9 @@ public struct FileLogHandler: LogHandler {
         }()
         let logMsg: String
         if let meta = metadata, meta.count > 0 {
-            logMsg = "[\(level)] \(file) \(function):\(line) \(message) \(meta.description)"
+            logMsg = "\(Utils.shared.localTimeToString()) [\(level)] \(file) \(function):\(line) \(message) \(meta.description)"
         } else {
-            logMsg = "[\(level)] \(file) \(function):\(line) \(message)"
+            logMsg = "\(Utils.shared.localTimeToString()) [\(level)] \(file) \(function):\(line) \(message)"
         }
         self.fileIO.append(string: logMsg.appending("\n"))
     }

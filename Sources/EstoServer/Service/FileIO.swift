@@ -16,17 +16,20 @@ public enum FileIOMode {
 }
 
 /// Used for working with file input/output.
-public struct FileIO {
+public class FileIO {
     public let fileManager: FileManager = FileManager.default
     public var fileHandle: FileHandle?
+    public var fileUrl: URL?
     private var dispatchQueue: DispatchQueue = DispatchQueue(label: "com.estoapps.estoserver.fileio")
+    private var isRotatingFile = false
+    private var logQueue: [String] = []
 
     /// Checks if the file exists at the given URL.
     public func isFileExists(at fileUrl: URL) -> Bool {
         do {
             return try fileUrl.checkResourceIsReachable()
         } catch let err {
-            Log?.error("Error checking file exists \(err)")
+            print("Error checking file exists \(err)")
         }
         return false
     }
@@ -53,7 +56,7 @@ public struct FileIO {
     }
 
     /// Open an existing file with the given mode, which can be for reading, writing or for appending.
-    public mutating func openFile(fileUrl: URL, mode: FileIOMode) {
+    public func openFile(fileUrl: URL, mode: FileIOMode) {
         switch mode {
         case .read:
             self.fileHandle = FileHandle(forReadingAtPath: fileUrl.path)
@@ -62,17 +65,67 @@ public struct FileIO {
         case .append:
             self.fileHandle = FileHandle(forUpdatingAtPath: fileUrl.path)
         }
+        self.fileUrl = fileUrl
+    }
+
+    public func getFileAttributes(for fileUrl: URL) -> [FileAttributeKey: Any] {
+        do {
+            return try self.fileManager.attributesOfItem(atPath: fileUrl.path)
+        } catch let err {
+            print("Error getting file attributes: \(err.localizedDescription)")
+        }
+        return [:]
     }
 
     /// Appends the given string to the file and invokes the completion handler if specified. This method writes to the file serially in a background thread.
     public func append(string: String, completion: ((Bool) -> Void)? = nil) {
-        self.dispatchQueue.sync {
-            if let handle = self.fileHandle, let data = string.data(using: .utf8) {
-                handle.seekToEndOfFile()
-                handle.write(data)
-                if let cb = completion { cb(true) }
+        if !self.isRotatingFile {
+            let attrib = self.getFileAttributes(for: self.fileUrl!)
+            let size: Double = attrib[.size] as? Double ?? 0.0
+            if size >= Const.maxLogFileSize {  // Do file rotation
+                self.isRotatingFile = true
+                self.close()
+                do {
+                    try self.fileManager.moveItem(at: self.fileUrl!, to: URL(fileURLWithPath: "/var/tmp/estoserver/server.2.log"))
+                } catch let err {
+                    print("Error moving file: \(err.localizedDescription)")
+                }
+                let url = URL(fileURLWithPath: "/var/tmp/estoserver/server.log")
+                self.createFileIfNotExists(url)
+                self.openFile(fileUrl: url, mode: .append)
+            }
+            if !self.isRotatingFile {
+                if let fileHandle = self.fileHandle {
+                    self.appendToFile(string: string, fileHandle: fileHandle, completion: { if let cb = completion { cb(true) } })
+                }
             } else {
-                if let cb = completion { cb(false) }
+                self.logQueue.append(string)
+            }
+            self.processLogQueue()
+        } else {
+            self.logQueue.append(string)
+        }
+    }
+
+    private func appendToFile(string: String, fileHandle: FileHandle, completion: () -> Void) {
+        self.dispatchQueue.sync {
+            fileHandle.seekToEndOfFile()
+            if let data = string.data(using: .utf8) {
+                fileHandle.write(data)
+                completion()
+            }
+        }
+    }
+
+    private func processLogQueue() {
+        if self.isRotatingFile {
+            if self.logQueue.isEmpty {
+                self.isRotatingFile = false  // Reset file rotating status until all log messages in the log queue are processed. Else there will be writing inconsistency.
+            } else {
+                let logMsg = self.logQueue.removeFirst()
+                if let fileHandle = self.fileHandle {
+                    self.appendToFile(string: logMsg, fileHandle: fileHandle) { self.processLogQueue() }
+                }
             }
         }
     }

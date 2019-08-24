@@ -17,6 +17,9 @@ public struct Constants {
     static let pubDir = "/opt/public/"
     static let serverName = "EstoServer"
     static let _10MB = 10_485_760
+    //static let maxLogFileSize: Double = 1_048_576.0  // 1 MB
+    static let maxLogFileSize: Double = 1048 // 1 KB
+    static let logFilePath = "/var/tmp/estoserver/server.log"
 
     static let samplePemCert = """
 -----BEGIN CERTIFICATE-----

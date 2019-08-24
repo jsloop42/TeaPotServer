@@ -5,10 +5,8 @@
 //  Created by jsloop on 20/08/19.
 //
 
-import Logging
-
-let log = LoggingService(level: .debug)
-Log?.info("hello")
+_ = LoggingService(level: .debug)
+Log?.debug("hello")
 
 let server = HTTPServer()
 server.start()
