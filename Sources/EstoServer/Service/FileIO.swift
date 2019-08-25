@@ -26,12 +26,7 @@ public class FileIO {
 
     /// Checks if the file exists at the given URL.
     public func isFileExists(at fileUrl: URL) -> Bool {
-        do {
-            return try fileUrl.checkResourceIsReachable()
-        } catch let err {
-            print("Error checking file exists \(err)")
-        }
-        return false
+        return self.fileManager.fileExists(atPath: fileUrl.path)
     }
 
     /// Checks if the directory exists at the given URL.
@@ -128,6 +123,11 @@ public class FileIO {
                 }
             }
         }
+    }
+
+    public func delete(_ fileUrl: URL) {
+        do { try self.fileManager.removeItem(at: fileUrl) } catch let err { print("Error deleting file: \(err.localizedDescription)") }
+
     }
 
     /// Reclaim any held resources.
