@@ -20,3 +20,5 @@ Pods/
 /.build
 /Packages
 *.log
+Key/*
+*.pem
