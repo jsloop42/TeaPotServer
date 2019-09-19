@@ -1,0 +1,4 @@
+#!/bin/bash
+
+swift package clean
+swift build

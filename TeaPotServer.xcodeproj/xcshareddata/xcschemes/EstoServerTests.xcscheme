@@ -17,9 +17,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EstoServer::EstoServerTests"
-               BuildableName = "EstoServerTests.xctest"
-               BlueprintName = "EstoServerTests"
-               ReferencedContainer = "container:EstoServer.xcodeproj">
+               BuildableName = "TeaPotServerTests.xctest"
+               BlueprintName = "TeaPotServerTests"
+               ReferencedContainer = "container:TeaPotServer.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

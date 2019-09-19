@@ -1,6 +1,6 @@
 //
 //  HTTPClient.swift
-//  EstoServerTests
+//  TeaPotServerTests
 //
 //  Created by jsloop on 25/08/19.
 //

@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EstoServer::EstoServer"
-               BuildableName = "EstoServer"
-               BlueprintName = "EstoServer"
-               ReferencedContainer = "container:EstoServer.xcodeproj">
+               BlueprintIdentifier = "TeaPotServer::TeaPotServer"
+               BuildableName = "TeaPotServer"
+               BlueprintName = "TeaPotServer"
+               ReferencedContainer = "container:TeaPotServer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EstoServer::EstoServerTests"
-               BuildableName = "EstoServerTests.xctest"
-               BlueprintName = "EstoServerTests"
-               ReferencedContainer = "container:EstoServer.xcodeproj">
+               BlueprintIdentifier = "TeaPotServer::TeaPotServerTests"
+               BuildableName = "TeaPotServerTests.xctest"
+               BlueprintName = "TeaPotServerTests"
+               ReferencedContainer = "container:TeaPotServer.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -56,10 +56,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EstoServer::EstoServer"
-            BuildableName = "EstoServer"
-            BlueprintName = "EstoServer"
-            ReferencedContainer = "container:EstoServer.xcodeproj">
+            BlueprintIdentifier = "TeaPotServer::TeaPotServer"
+            BuildableName = "TeaPotServer"
+            BlueprintName = "TeaPotServer"
+            ReferencedContainer = "container:TeaPotServer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>

@@ -1,7 +1,7 @@
 import XCTest
 import class Foundation.Bundle
 import Logging
-import EstoServer
+import TeaPotServer
 
 class State {
     public static let shared = State()
@@ -23,7 +23,7 @@ class State {
     }
 }
 
-final class EstoServerTests: XCTestCase {
+final class TeaPotServerTests: XCTestCase {
     private var isLoggerInitialized = false
     private lazy var log: LoggingService = {
         if !self.isLoggerInitialized {

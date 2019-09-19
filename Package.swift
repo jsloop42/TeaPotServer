@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "EstoServer",
+    name: "TeaPotServer",
     platforms: [
        .macOS(.v10_14),
     ],
@@ -20,10 +20,10 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "EstoServer",
+            name: "TeaPotServer",
             dependencies: ["NIO", "NIOHTTP1", "NIOHTTP2", "NIOTLS", "NIOSSL", "NIOFoundationCompat", "NIOExtras", "NIOWebSocket", "Logging", "Metrics", "MongoSwift"]),
         .testTarget(
-            name: "EstoServerTests",
-            dependencies: ["EstoServer", "Logging"]),
+            name: "TeaPotServerTests",
+            dependencies: ["TeaPotServer", "Logging"]),
     ]
 )
