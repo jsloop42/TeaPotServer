@@ -10,7 +10,7 @@ import Foundation
 public class HTTPClient: NSObject {
     private lazy var opsQueue: OperationQueue = {
         let q = OperationQueue()
-        q.name = "EstoServer API Test Queue"
+        q.name = "\(Const.serverName) API Test Queue"
         q.qualityOfService = .default
         return q
     }()

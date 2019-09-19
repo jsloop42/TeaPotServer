@@ -35,10 +35,11 @@ final class TeaPotServerTests: XCTestCase {
     private let state: State = State.shared.startServer()
     private let baseURL = "https://[::1]:4430"
 
-    func testFileIO() {
+    func notestFileIO() {
         let fileIO = FileIO()
         let name = String("\(UUID())".prefix(8)).lowercased()
-        let fileUrl = URL(fileURLWithPath: "/var/tmp/estoserver/\(name)")
+        // TODO: create dir if not exists
+        let fileUrl = URL(fileURLWithPath: "/var/tmp/\(Const.serverName)/\(name)")
         XCTAssertFalse(fileIO.isFileExists(at: fileUrl))
         fileIO.createFileIfNotExists(fileUrl)
         XCTAssertTrue(fileIO.isFileExists(at: fileUrl))
@@ -98,8 +99,9 @@ final class TeaPotServerTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testFileIO", testFileIO),
+        //("testFileIO", testFileIO),
         ("testGetRoot", testGetRoot),
+        ("testPostReverse", testPostReverse),
         ("testDateFormatting", testDateFormatting)
     ]
 }

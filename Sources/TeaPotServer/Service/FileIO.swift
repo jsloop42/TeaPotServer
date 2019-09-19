@@ -20,7 +20,7 @@ public class FileIO {
     public let fileManager: FileManager = FileManager.default
     public var fileHandle: FileHandle?
     public var fileUrl: URL?
-    private var dispatchQueue: DispatchQueue = DispatchQueue(label: "com.estoapps.estoserver.fileio")
+    private var dispatchQueue: DispatchQueue = DispatchQueue(label: "\(Const.serverName).fileio")
     private var isRotatingFile = false
     private var logQueue: [String] = []
 
@@ -81,12 +81,12 @@ public class FileIO {
                 self.isRotatingFile = true
                 self.close()
                 do {
-                    let path = "/var/tmp/estoserver/server.\(Utils.shared.dateToString(withFormat: DateFormat.dd_MMM_yyyy_HH_mm_ss.rawValue)).log"
+                    let path = "\(Const.logFileDir)/server.\(Utils.shared.dateToString(withFormat: DateFormat.dd_MMM_yyyy_HH_mm_ss.rawValue)).log"
                     try self.fileManager.moveItem(at: self.fileUrl!, to: URL(fileURLWithPath: path))
                 } catch let err {
                     print("Error moving file: \(err.localizedDescription)")
                 }
-                let url = URL(fileURLWithPath: "/var/tmp/estoserver/server.log")
+                let url = URL(fileURLWithPath: Const.logFilePath)
                 self.createFileIfNotExists(url)
                 self.openFile(fileUrl: url, mode: .append)
             }

@@ -38,7 +38,6 @@ public struct APIResponder: HTTPResponder {
             default:
                 return self.sendError404Response(request: request)
             }
-            break
         case .POST:
             switch header.uri {
             case "/reverse":
@@ -57,7 +56,6 @@ public struct APIResponder: HTTPResponder {
             default:
                 return self.sendError404Response(request: request)
             }
-            break
         case .PUT:
             return self.sendError404Response(request: request)
         case .DELETE:

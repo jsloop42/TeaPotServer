@@ -23,7 +23,7 @@ public struct LoggingService {
 
     init(level: Logger.Level) {
         self.init(level: level, handlers: [PlainTextFileLogHandler(logLevel: level),
-                                           StreamLogHandler.standardOutput(label: "com.estoapps.estoserver")])
+                                           StreamLogHandler.standardOutput(label: Const.serverName)])
     }
 
     init() {
@@ -128,7 +128,7 @@ public struct FoundationDBFileLogHandler: LogHandler {
     }
 
     public init(logLevel: Logger.Level) {
-        self.init(dbUrl: "mongo://127.0.0.1:27016", logLevel: logLevel)
+        self.init(dbUrl: Const.fsDBURL, logLevel: logLevel)
     }
 
     public func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, file: String, function: String, line: UInt) {
@@ -142,7 +142,7 @@ public struct FoundationDBFileLogHandler: LogHandler {
         logData.function = function
         logData.line = line
         if let meta = metadata {
-            if let corrID = meta["correlationID"] {
+            if let corrID = meta["correlationid"] {
                 logData.correlationId = corrID.description
             }
             let req = LogRequestData(method: meta["method"]?.description ?? "", uri: meta["uri"]?.description ?? "",

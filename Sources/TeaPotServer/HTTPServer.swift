@@ -48,7 +48,8 @@ public final class HTTP2Handler<Responder: HTTPResponder>: ChannelInboundHandler
             let channel = context.channel
             DispatchQueue.global().async {
                 let response: EventLoopFuture<HTTPServerResponse> = self.responder.respond(to: request).flatMapError { (err) -> EventLoopFuture<HTTPServerResponse> in
-                    return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .internalServerError, body: HTTPBody(text: Message.internalServerError)))
+                    let status = HTTPResponseStatus.internalServerError
+                    return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: status, body: HTTPBody(text: status.reasonPhrase)))
                 }
                 self.request = nil
                 self.writeResponse(response, to: channel)

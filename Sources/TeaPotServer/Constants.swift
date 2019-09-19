@@ -12,16 +12,19 @@ public typealias Const = Constants
 public struct Constants {
     static let serverVersion = "v1.0"
     static let host = "::1"
+    static let fsDBURL = "mongo://127.0.0.1:27016"
     //static let host = "127.0.0.1"
     static let httpPort = 8080
     static let httpsPort = 4430
     static let pubDir = "/opt/public/"
-    static let serverName = "TeaPotServer"
+    static let serverName = "tea-pot-server"
     static let _10MB = 10_485_760
     //static let maxLogFileSize: Double = 1_048_576.0  // 1 MB
     static let maxLogFileSize: Double = 1048 // 1 KB
-    static let logFilePath = "/var/tmp/estoserver/server.log"
+    static let logFileDir = "/var/tmp/\(Const.serverName)/"
+    static let logFilePath = "/var/tmp/\(Const.serverName)/server.log"
 
+    // NB: Do not add certs to the code. This is for quick demo purpose. Load certs from keychain or filesystem.
     static let samplePemCert = """
 -----BEGIN CERTIFICATE-----
 MIIC+zCCAeOgAwIBAgIJANG6W1v704/aMA0GCSqGSIb3DQEBBQUAMBQxEjAQBgNV
@@ -81,8 +84,4 @@ public enum AppError: Error {
 public enum MimeType: String {
     case json = "application/json"
     case plainText = "text/plain"
-}
-
-public struct Message {
-    public static let internalServerError = "Internal Server Error"
 }
