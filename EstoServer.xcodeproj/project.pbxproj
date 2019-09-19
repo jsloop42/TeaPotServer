@@ -41,6 +41,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		9E3244C42333F3D500BEFB39 /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* HTTPServer.swift */; };
+		9E3244C52333F3F600BEFB39 /* APIResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* APIResponder.swift */; };
+		9E3244C62333F3FA00BEFB39 /* HTTPUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* HTTPUtils.swift */; };
 		9E7662CF23125332008C19E4 /* FileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* FileIO.swift */; };
 		9E7662D023125336008C19E4 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* LoggingService.swift */; };
 		9E7662D12312533A008C19E4 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* Utils.swift */; };
@@ -5618,6 +5621,8 @@
 			files = (
 				9E7662D22312533F008C19E4 /* HTTPModels.swift in Sources */,
 				OBJ_1609 /* EstoServerTests.swift in Sources */,
+				9E3244C52333F3F600BEFB39 /* APIResponder.swift in Sources */,
+				9E3244C42333F3D500BEFB39 /* HTTPServer.swift in Sources */,
 				OBJ_1610 /* HTTPClient.swift in Sources */,
 				OBJ_1611 /* XCTestManifests.swift in Sources */,
 				9E7662D323125342008C19E4 /* LogModel.swift in Sources */,
@@ -5625,6 +5630,7 @@
 				9E7662CF23125332008C19E4 /* FileIO.swift in Sources */,
 				9E7662D12312533A008C19E4 /* Utils.swift in Sources */,
 				9E7662D423125349008C19E4 /* Constants.swift in Sources */,
+				9E3244C62333F3FA00BEFB39 /* HTTPUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
