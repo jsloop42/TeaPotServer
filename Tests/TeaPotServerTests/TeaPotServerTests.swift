@@ -33,6 +33,7 @@ final class TeaPotServerTests: XCTestCase {
     }()
     private let http = HTTPClient()
     private let state: State = State.shared.startServer()
+    private let baseURL = "https://[::1]:4430"
 
     func testFileIO() {
         let fileIO = FileIO()
@@ -48,14 +49,42 @@ final class TeaPotServerTests: XCTestCase {
     func testGetRoot() {
         XCTAssertTrue(State.shared.isServerRunning)
         let expectation = XCTestExpectation(description: "GET /")
-        if let url = URL(string: "https://[::1]:4430/") {
+        if let url = URL(string: "\(self.baseURL)/") {
             self.http.get(url) { data in
                 if let aData = data {
                     let str = String(data: aData, encoding: .utf8)
-                    print("GET / \(String(describing: str))")
+                    Log?.debug("GET / - \(String(describing: str))")
+                    let json = try? JSONDecoder().decode(TSResponseOK.self, from: aData)
+                    XCTAssertNotNil(json)
+                    XCTAssertTrue(json!.status)
+                    XCTAssertEqual(json!.data, "ok")
                     expectation.fulfill()
                 }
             }
+            wait(for: [expectation], timeout: 10)
+        } else {
+            XCTAssert(false, "Constructing URL failed")
+        }
+    }
+
+    func testPostReverse() {
+        XCTAssertTrue(State.shared.isServerRunning)
+        let expectation = XCTestExpectation(description: "POST /reverse")
+        if let url = URL(string: "\(self.baseURL)/reverse") {
+            let req = TSRequestGeneric(msg: "42")
+            let data = try? JSONEncoder().encode(req)
+            XCTAssertNotNil(data)
+            self.http.post(url, data: data, headers: ["content-type": MimeType.json.rawValue], completion: { res in
+                if let aData = res {
+                    let str = String(data: aData, encoding: .utf8)
+                    Log?.debug("POST /reverse: \(String(describing: str))")
+                    let json = try? JSONDecoder().decode(TSResponseOK.self, from: aData)
+                    XCTAssertNotNil(json)
+                    XCTAssertTrue(json!.status)
+                    XCTAssertEqual(json!.data, "24")
+                    expectation.fulfill()
+                }
+            })
             wait(for: [expectation], timeout: 10)
         } else {
             XCTAssert(false, "Constructing URL failed")

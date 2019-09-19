@@ -13,10 +13,12 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EstoServer::EstoServerTests"
+               BlueprintIdentifier = "TeaPotServer::TeaPotServerTests"
                BuildableName = "TeaPotServerTests.xctest"
                BlueprintName = "TeaPotServerTests"
                ReferencedContainer = "container:TeaPotServer.xcodeproj">

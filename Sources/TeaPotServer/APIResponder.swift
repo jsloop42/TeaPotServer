@@ -45,7 +45,7 @@ public struct APIResponder: HTTPResponder {
                 do {
                     if var reqBody = request.body {
                         var body = HTTPBody(data: reqBody.data, mimeType: MimeType.json.rawValue)
-                        let echo = try body.decodeJSON(entity: TSRequestEcho.self)
+                        let echo = try body.decodeJSON(entity: TSRequestGeneric.self)
                         let resp = TSResponseOK(status: true, data: String(echo.msg.reversed()))
                         let respBody = try HTTPBody(entity: resp, prettyPrint: true)
                         return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .ok, body: respBody))

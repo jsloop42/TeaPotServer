@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: Request
 
-public struct TSRequestEcho: Codable {
+public struct TSRequestGeneric: Codable {
     var msg: String
 
     init(msg: String) {
