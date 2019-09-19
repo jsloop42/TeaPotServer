@@ -28,4 +28,15 @@ public class Utils {
         let df = self.getLocalTimeDateFormatter()
         return df.date(from: dateString)
     }
+
+    public func dateToString(for date: Date? = nil, withFormat format: String) -> String {
+        let df = DateFormatter()
+        df.dateFormat = format
+        df.timeZone = TimeZone.current
+        return df.string(from: date ?? Date())
+    }
+}
+
+public enum DateFormat: String {
+    case dd_MMM_yyyy_HH_mm_ss = "dd-MMM-yyyy-HH:mm:ss"
 }

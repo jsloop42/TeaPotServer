@@ -3,6 +3,26 @@ import class Foundation.Bundle
 import Logging
 import EstoServer
 
+class State {
+    public static let shared = State()
+    public var isServerRunning = false
+    public var server: HTTPServer = HTTPServer()
+
+    deinit {
+        
+    }
+
+    func startServer() -> State {
+        DispatchQueue.global().async {
+            if !self.isServerRunning {
+                self.isServerRunning = true
+                self.server.start()
+            }
+        }
+        return self
+    }
+}
+
 final class EstoServerTests: XCTestCase {
     private var isLoggerInitialized = false
     private lazy var log: LoggingService = {
@@ -12,6 +32,7 @@ final class EstoServerTests: XCTestCase {
         return Log!
     }()
     private let http = HTTPClient()
+    private let state: State = State.shared.startServer()
 
     func testFileIO() {
         let fileIO = FileIO()
@@ -25,6 +46,7 @@ final class EstoServerTests: XCTestCase {
     }
 
     func testGetRoot() {
+        XCTAssertTrue(State.shared.isServerRunning)
         let expectation = XCTestExpectation(description: "GET /")
         if let url = URL(string: "https://[::1]:4430/") {
             self.http.get(url) { data in
@@ -40,8 +62,15 @@ final class EstoServerTests: XCTestCase {
         }
     }
 
+    func testDateFormatting() {
+        let date = Date(msSinceEpoch: 1546281000000)
+        let dateStr = Utils.shared.dateToString(for: date, withFormat: DateFormat.dd_MMM_yyyy_HH_mm_ss.rawValue)
+        XCTAssertEqual(dateStr, "01-Jan-2019-00:00:00")
+    }
+
     static var allTests = [
         ("testFileIO", testFileIO),
         ("testGetRoot", testGetRoot),
+        ("testDateFormatting", testDateFormatting)
     ]
 }

@@ -12,19 +12,19 @@ import NIOHTTP1
 import NIOHTTP2
 import NIOFoundationCompat
 
-internal final class HTTP2Handler<Responder: HTTPResponder>: ChannelInboundHandler {
-    internal typealias InboundIn = HTTPServerRequestPart
-    internal typealias OutboundOut = HTTPServerResponsePart
+public final class HTTP2Handler<Responder: HTTPResponder>: ChannelInboundHandler {
+    public typealias InboundIn = HTTPServerRequestPart
+    public typealias OutboundOut = HTTPServerResponsePart
     private let httpUtils = HTTPUtils.shared
     private let responder: Responder
     private var isKeepAlive: Bool = false
     private var request: HTTPServerRequest?
 
-    internal init(responder: Responder) {
+    public init(responder: Responder) {
         self.responder = responder
     }
 
-    internal func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+    public func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         let reqPart = self.unwrapInboundIn(data)
         switch reqPart {
         case .head(let reqHead):
@@ -82,17 +82,17 @@ internal final class HTTP2Handler<Responder: HTTPResponder>: ChannelInboundHandl
         return responded
     }
 
-    internal func channelReadComplete(context: ChannelHandlerContext) {
+    public func channelReadComplete(context: ChannelHandlerContext) {
         context.flush()
     }
 }
 
-internal final class HTTPHandler: ChannelInboundHandler {
-    internal typealias InboundIn = HTTPServerRequestPart
-    internal typealias OutboundOut = HTTPServerResponsePart
+public final class HTTPHandler: ChannelInboundHandler {
+    public typealias InboundIn = HTTPServerRequestPart
+    public typealias OutboundOut = HTTPServerResponsePart
     private let httpUtils = HTTPUtils.shared
 
-    internal func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+    public func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         let reqPart = self.unwrapInboundIn(data)
         switch reqPart {
         case .head(let reqHead):
@@ -186,15 +186,15 @@ public class HTTPServer {
             try channel2.closeFuture.wait()
             Log?.info("Server closed")
         } catch let err {
-            Log?.error("Error: \(err.localizedDescription)")
+            Log?.error("Error: \(err)")
         }
     }
 }
 
-final class ErrorHandler: ChannelInboundHandler {
-    typealias InboundIn = Never
+public final class ErrorHandler: ChannelInboundHandler {
+    public typealias InboundIn = Never
 
-    func errorCaught(context: ChannelHandlerContext, error: Error) {
+    public func errorCaught(context: ChannelHandlerContext, error: Error) {
         Log?.error("Server received error: \(error)")
         context.close(promise: nil)
     }

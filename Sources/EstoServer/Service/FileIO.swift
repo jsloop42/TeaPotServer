@@ -81,7 +81,8 @@ public class FileIO {
                 self.isRotatingFile = true
                 self.close()
                 do {
-                    try self.fileManager.moveItem(at: self.fileUrl!, to: URL(fileURLWithPath: "/var/tmp/estoserver/server.2.log"))
+                    let path = "/var/tmp/estoserver/server.\(Utils.shared.dateToString(withFormat: DateFormat.dd_MMM_yyyy_HH_mm_ss.rawValue)).log"
+                    try self.fileManager.moveItem(at: self.fileUrl!, to: URL(fileURLWithPath: path))
                 } catch let err {
                     print("Error moving file: \(err.localizedDescription)")
                 }

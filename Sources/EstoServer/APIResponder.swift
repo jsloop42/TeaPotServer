@@ -11,8 +11,8 @@ import NIOHTTP1
 import NIOHTTP2
 import NIOFoundationCompat
 
-struct APIResponder: HTTPResponder {
-    func respond(to request: HTTPServerRequest) -> EventLoopFuture<HTTPServerResponse> {
+public struct APIResponder: HTTPResponder {
+    public func respond(to request: HTTPServerRequest) -> EventLoopFuture<HTTPServerResponse> {
         let header = request.header
         switch header.method {
         case .GET:

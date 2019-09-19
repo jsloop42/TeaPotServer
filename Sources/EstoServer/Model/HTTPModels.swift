@@ -84,6 +84,6 @@ public struct HTTPBody: ExpressibleByStringLiteral {
     }
 }
 
-protocol HTTPResponder {
+public protocol HTTPResponder {
     func respond(to request: HTTPServerRequest) -> EventLoopFuture<HTTPServerResponse>
 }
