@@ -28,6 +28,7 @@ public class HTTPServerRequest {
     }
 }
 
+/// Represents a `HTTPServerResponse` object
 public struct HTTPServerResponse {
     public let header: HTTPResponseHead
     public let body: HTTPBody?
@@ -38,6 +39,7 @@ public struct HTTPServerResponse {
     }
 }
 
+/// Methods work with HTTP body content
 public struct HTTPBody: ExpressibleByStringLiteral {
     private static let allocator = ByteBufferAllocator()
     let buffer: ByteBuffer

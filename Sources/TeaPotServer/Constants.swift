@@ -10,12 +10,13 @@ import Foundation
 public typealias Const = Constants
 
 public struct Constants {
+    static let serverVersion = "v1.0"
     static let host = "::1"
     //static let host = "127.0.0.1"
     static let httpPort = 8080
     static let httpsPort = 4430
     static let pubDir = "/opt/public/"
-    static let serverName = "EstoServer"
+    static let serverName = "TeaPotServer"
     static let _10MB = 10_485_760
     //static let maxLogFileSize: Double = 1_048_576.0  // 1 MB
     static let maxLogFileSize: Double = 1048 // 1 KB

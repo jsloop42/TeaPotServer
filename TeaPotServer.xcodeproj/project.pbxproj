@@ -41,6 +41,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		9EBF138323342892007CC47F /* TSModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBF138223342892007CC47F /* TSModels.swift */; };
+		9EBF138423342892007CC47F /* TSModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBF138223342892007CC47F /* TSModels.swift */; };
 		9ED850612333F8CD003FA0AE /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* HTTPServer.swift */; };
 		9ED850622333F8CD003FA0AE /* HTTPUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* HTTPUtils.swift */; };
 		9ED850632333F8F1003FA0AE /* FileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* FileIO.swift */; };
@@ -1719,6 +1721,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9EBF138223342892007CC47F /* TSModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TSModels.swift; sourceTree = "<group>"; };
 		"MongoSwift::MongoSwift::Product" /* MongoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MongoSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		OBJ_100 /* QuiescingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuiescingHelper.swift; sourceTree = "<group>"; };
@@ -2912,6 +2915,7 @@
 			children = (
 				OBJ_14 /* HTTPModels.swift */,
 				OBJ_15 /* LogModel.swift */,
+				9EBF138223342892007CC47F /* TSModels.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3750,7 +3754,7 @@
 			path = pem;
 			sourceTree = "<group>";
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -3761,7 +3765,6 @@
 				OBJ_936 /* Info.plist */,
 				OBJ_937 /* build */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_507 /* pkcs7 */ = {
@@ -5496,7 +5499,7 @@
 				English,
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_912 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -5922,6 +5925,7 @@
 				OBJ_1970 /* LogModel.swift in Sources */,
 				OBJ_1971 /* FileIO.swift in Sources */,
 				OBJ_1972 /* LoggingService.swift in Sources */,
+				9EBF138323342892007CC47F /* TSModels.swift in Sources */,
 				OBJ_1973 /* PersistenceService.swift in Sources */,
 				OBJ_1974 /* Utils.swift in Sources */,
 				OBJ_1975 /* main.swift in Sources */,
@@ -5940,6 +5944,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				9EBF138423342892007CC47F /* TSModels.swift in Sources */,
 				9ED850642333F8F1003FA0AE /* LoggingService.swift in Sources */,
 				9ED850622333F8CD003FA0AE /* HTTPUtils.swift in Sources */,
 				OBJ_2035 /* HTTPClient.swift in Sources */,
