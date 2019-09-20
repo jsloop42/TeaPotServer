@@ -19,10 +19,10 @@ public struct Constants {
     static let pubDir = "/opt/public/"
     static let serverName = "tea-pot-server"
     static let _10MB = 10_485_760
-    //static let maxLogFileSize: Double = 1_048_576.0  // 1 MB
-    static let maxLogFileSize: Double = 1048 // 1 KB
-    static let logFileDir = "/var/tmp/\(Const.serverName)/"
-    static let logFilePath = "/var/tmp/\(Const.serverName)/server.log"
+    static let maxLogFileSize: Double = 1073741824  // 1 GB
+    //static let maxLogFileSize: Double = 1048576 // 1 MB
+    static let logFileDir = "/var/log/\(Const.serverName)/"
+    static let logFilePath = "/var/log/\(Const.serverName)/server.log"
 
     // NB: Do not add certs to the code. This is for quick demo purpose. Load certs from keychain or filesystem.
     static let samplePemCert = """

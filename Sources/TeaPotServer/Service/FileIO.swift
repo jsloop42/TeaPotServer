@@ -23,6 +23,7 @@ public class FileIO {
     private var dispatchQueue: DispatchQueue = DispatchQueue(label: "\(Const.serverName).fileio")
     private var isRotatingFile = false
     private var logQueue: [String] = []
+    private let fileNameRegex = try? NSRegularExpression(pattern: "[^\\/][a-zA-Z0-9\\-:.]+(?=\\.log)", options: .useUnixLineSeparators)
 
     /// Checks if the file exists at the given URL.
     public func isFileExists(at fileUrl: URL) -> Bool {
@@ -38,6 +39,17 @@ public class FileIO {
         return false
     }
 
+    /// Create directory at the given path including intermediate directories as well.
+    public func createDirectory(at dirURL: URL) -> Bool {
+        do {
+            try self.fileManager.createDirectory(at: dirURL, withIntermediateDirectories: true, attributes: nil)
+            return true
+        } catch let err {
+            print("Error creating directory: \(err)")
+            return false
+        }
+    }
+
     /// Create a file at the given file url irrespective of whether the file exists or not. If the file exists at the file url, this will clear its contents.
     public func createFile(_ fileUrl: URL) {
         self.fileManager.createFile(atPath: fileUrl.path, contents: nil, attributes: nil)
@@ -46,6 +58,8 @@ public class FileIO {
     /// Creates a file at the given file URL if it does not exists already.
     public func createFileIfNotExists(_ fileUrl: URL) {
         if !self.isFileExists(at: fileUrl) {
+            let dirURL = fileUrl.deletingLastPathComponent()
+            if !self.isDirectoryExists(at: dirURL) { _ = self.createDirectory(at: dirURL) }
             self.createFile(fileUrl)
         }
     }
@@ -80,12 +94,21 @@ public class FileIO {
             if size >= Const.maxLogFileSize {  // Do file rotation
                 self.isRotatingFile = true
                 self.close()
-                do {
-                    let path = "\(Const.logFileDir)/server.\(Utils.shared.dateToString(withFormat: DateFormat.dd_MMM_yyyy_HH_mm_ss.rawValue)).log"
-                    try self.fileManager.moveItem(at: self.fileUrl!, to: URL(fileURLWithPath: path))
-                } catch let err {
-                    print("Error moving file: \(err.localizedDescription)")
+                print("Log file closed.")
+                DispatchQueue.concurrentPerform(iterations: 1) { i in
+                    print("Rotating...")
+                    do {
+                        let path = "\(Const.logFileDir)/server.\(Utils.shared.dateToString(withFormat: DateFormat.dd_MMM_yyyy_HH_mm_ss.rawValue)).log"
+                        try self.fileManager.moveItem(at: self.fileUrl!, to: URL(fileURLWithPath: path))
+                        self.dispatchQueue.async {
+                            self.compress(path)
+                        }
+                        print("Rotation complete.")
+                    } catch let err {
+                        print("Error moving file: \(err.localizedDescription)")
+                    }
                 }
+                print("Opening new log file.")
                 let url = URL(fileURLWithPath: Const.logFilePath)
                 self.createFileIfNotExists(url)
                 self.openFile(fileUrl: url, mode: .append)
@@ -134,5 +157,42 @@ public class FileIO {
     /// Reclaim any held resources.
     public func close() {
         self.fileHandle?.closeFile()
+    }
+
+    public func compress(_ path: String) {
+        let task = Process()
+        task.launchPath = "/usr/bin/env"
+        var fileName: String = ""
+        if let regex = self.fileNameRegex {
+            let matches = regex.matches(in: path, options: .init(), range: NSMakeRange(0, path.count))
+            if matches.count == 1 {
+                let range = matches[0].range
+                let string = path as NSString
+                fileName = string.substring(with: range)
+            }
+        } else {
+            fileName = "server.\(Utils.shared.dateToString(withFormat: DateFormat.dd_MMM_yyyy_HH_mm_ss.rawValue)).log"
+        }
+        task.arguments = ["zip", "-9mj", "\(Const.logFileDir)/\(fileName).zip", path]
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        let outHandler = pipe.fileHandleForReading
+        outHandler.waitForDataInBackgroundAndNotify()
+        var dataAvailable: NSObjectProtocol!
+        dataAvailable = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSFileHandleDataAvailable, object: outHandler, queue: nil, using: { notif in
+            let data = pipe.fileHandleForReading.availableData
+            if data.count > 0 {
+                if let _ = String(data: data, encoding: .utf8) {
+                    //print(str)
+                }
+                outHandler.waitForDataInBackgroundAndNotify()
+            } else {
+                NotificationCenter.default.removeObserver(dataAvailable as Any)
+            }
+        })
+        task.terminationHandler = { proc in
+            //print("Task terminated: \(proc)")
+        }
+        task.launch()
     }
 }

@@ -12,12 +12,13 @@ public var Log: LoggingService?
 
 public struct LoggingService {
     private var muxHandler: MultiplexLogHandler
-    public var level: Logger.Level = .info
+    private var isLevelSet: Bool = false
+    private var level: Logger.Level = .debug
     public var metadata: Logger.Metadata = [:]
 
     init(level: Logger.Level, handlers: [LogHandler]) {
-        self.level = level
         self.muxHandler = MultiplexLogHandler(handlers)
+        self.level = level
         Log = self
     }
 

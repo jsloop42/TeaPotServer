@@ -28,7 +28,7 @@ public final class HTTP2Handler<Responder: HTTPResponder>: ChannelInboundHandler
         let reqPart = self.unwrapInboundIn(data)
         switch reqPart {
         case .head(let reqHead):
-            print("req: ", reqHead)
+            Log?.info("req: \(reqHead.description)")
             self.isKeepAlive = reqHead.isKeepAlive
             var contentLength: Int = 0  // The request body content length if present
             if let length = reqHead.headers["content-length"].first { contentLength = Int(length) ?? 0 }
@@ -97,7 +97,7 @@ public final class HTTPHandler: ChannelInboundHandler {
         let reqPart = self.unwrapInboundIn(data)
         switch reqPart {
         case .head(let reqHead):
-            print("req: ", reqHead)
+            Log?.info("req: \(reqHead.description)")
             var headers = httpUtils.getHeaders(contentLength: 0)
             headers.add(name: "location", value: "https://[\(Const.host)]:\(Const.httpsPort)")  // TODO: change it to IPv4 mode
             let channel = context.channel
