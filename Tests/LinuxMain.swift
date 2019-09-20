@@ -1,7 +1,7 @@
 import XCTest
 
-import EstoServerTests
+import TeaPotServerTests
 
 var tests = [XCTestCaseEntry]()
-tests += EstoServerTests.allTests()
+tests += TeaPotServerTests.allTests()
 XCTMain(tests)

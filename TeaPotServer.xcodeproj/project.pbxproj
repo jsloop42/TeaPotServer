@@ -1723,6 +1723,7 @@
 /* Begin PBXFileReference section */
 		9EBF138223342892007CC47F /* TSModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TSModels.swift; sourceTree = "<group>"; };
 		9EBF13852334372B007CC47F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9EC8636023357C6700B588D7 /* LinuxMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LinuxMain.swift; path = Tests/LinuxMain.swift; sourceTree = SOURCE_ROOT; };
 		"MongoSwift::MongoSwift::Product" /* MongoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MongoSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		OBJ_100 /* QuiescingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuiescingHelper.swift; sourceTree = "<group>"; };
@@ -3122,6 +3123,7 @@
 		OBJ_22 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				9EC8636023357C6700B588D7 /* LinuxMain.swift */,
 				OBJ_23 /* TeaPotServerTests */,
 			);
 			name = Tests;
