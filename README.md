@@ -4,6 +4,18 @@
 
 The server is modelled around REST API, with route handler for `GET`, `POST`, `PUT` and `DELETE`. The server accepts HTTPS connection as well as redirects HTTP connections to HTTPS route.
 
+The server has robust file logging with log rotation that conforms to [Swift Log API](https://github.com/apple/swift-log). 
+
+## Running
+
+- Make sure that the path `/var/log/tea-pot-server` exists with the right permission so that the sever can write logs in there.
+
+```bash
+cd /var/log
+sudo mkdir tea-pot-server
+sudo chown username:staff tea-pot-server
+````
+
 ## Curl with HTTP2
 
 Install a version of curl that supports HTTP2. With homebrew, use the command below.
@@ -25,7 +37,7 @@ $ curl --version
 # Features: AsynchDNS brotli GSS-API HTTP2 HTTPS-proxy IPv6 Kerberos Largefile libz Metalink NTLM NTLM_WB SPNEGO SSL TLS-SRP UnixSockets
 ```
 
-### Endpoints
+### Test Endpoints
 
 `> GET /`
 
@@ -90,3 +102,7 @@ curl --http2 -X POST "https://[::1]:4430/reversed" -k | jq
 There is an `HTTPClient` which uses `URLSession` to make requests to the server with HTTPS validation disabled so that it works on self signed certificates.
 
 To run the tests, first stop any existing copy of the server and run the test from Xcode. 
+
+## Project Goal
+
+- Illustrate the use of Swift NIO  in developing a production grade HTTP2 server with logging.

@@ -19,7 +19,7 @@ public struct APIResponder: HTTPResponder {
             switch header.uri {
             case "/":
                 do {
-                    Log?.debug("Request received: GET /")
+                    Log?.info("Request received: GET /")
                     let resp = try self.constructOKResponse()
                     return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .ok, body: resp))
                 } catch let err {
@@ -38,10 +38,10 @@ public struct APIResponder: HTTPResponder {
             default:
                 return self.sendError404Response(request: request)
             }
-            break
         case .POST:
             switch header.uri {
             case "/reverse":
+                Log?.debug("Request received: POST /reverse")
                 do {
                     if var reqBody = request.body {
                         var body = HTTPBody(data: reqBody.data, mimeType: MimeType.json.rawValue)
@@ -57,7 +57,6 @@ public struct APIResponder: HTTPResponder {
             default:
                 return self.sendError404Response(request: request)
             }
-            break
         case .PUT:
             return self.sendError404Response(request: request)
         case .DELETE:

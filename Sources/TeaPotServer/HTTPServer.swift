@@ -28,7 +28,7 @@ public final class HTTP2Handler<Responder: HTTPResponder>: ChannelInboundHandler
         let reqPart = self.unwrapInboundIn(data)
         switch reqPart {
         case .head(let reqHead):
-            print("req: ", reqHead)
+            Log?.info("req: \(reqHead.description)")
             self.isKeepAlive = reqHead.isKeepAlive
             var contentLength: Int = 0  // The request body content length if present
             if let length = reqHead.headers["content-length"].first { contentLength = Int(length) ?? 0 }
@@ -48,7 +48,8 @@ public final class HTTP2Handler<Responder: HTTPResponder>: ChannelInboundHandler
             let channel = context.channel
             DispatchQueue.global().async {
                 let response: EventLoopFuture<HTTPServerResponse> = self.responder.respond(to: request).flatMapError { (err) -> EventLoopFuture<HTTPServerResponse> in
-                    return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: .internalServerError, body: HTTPBody(text: Message.internalServerError)))
+                    let status = HTTPResponseStatus.internalServerError
+                    return request.eventLoop.makeSucceededFuture(HTTPServerResponse(status: status, body: HTTPBody(text: status.reasonPhrase)))
                 }
                 self.request = nil
                 self.writeResponse(response, to: channel)
@@ -96,7 +97,7 @@ public final class HTTPHandler: ChannelInboundHandler {
         let reqPart = self.unwrapInboundIn(data)
         switch reqPart {
         case .head(let reqHead):
-            print("req: ", reqHead)
+            Log?.info("req: \(reqHead.description)")
             var headers = httpUtils.getHeaders(contentLength: 0)
             headers.add(name: "location", value: "https://[\(Const.host)]:\(Const.httpsPort)")  // TODO: change it to IPv4 mode
             let channel = context.channel

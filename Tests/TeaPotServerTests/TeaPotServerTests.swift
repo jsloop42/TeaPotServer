@@ -38,7 +38,8 @@ final class TeaPotServerTests: XCTestCase {
     func testFileIO() {
         let fileIO = FileIO()
         let name = String("\(UUID())".prefix(8)).lowercased()
-        let fileUrl = URL(fileURLWithPath: "/var/tmp/estoserver/\(name)")
+        _ = fileIO.createDirectory(at: URL(fileURLWithPath: Const.logFileDir))
+        let fileUrl = URL(fileURLWithPath: "\(Const.logFileDir)/\(name)")
         XCTAssertFalse(fileIO.isFileExists(at: fileUrl))
         fileIO.createFileIfNotExists(fileUrl)
         XCTAssertTrue(fileIO.isFileExists(at: fileUrl))
@@ -100,6 +101,7 @@ final class TeaPotServerTests: XCTestCase {
     static var allTests = [
         ("testFileIO", testFileIO),
         ("testGetRoot", testGetRoot),
+        ("testPostReverse", testPostReverse),
         ("testDateFormatting", testDateFormatting)
     ]
 }
