@@ -1,6 +1,6 @@
 # TeaPotServer
 
-`TeaPotServer` is a HTTP2 server written entirely using [Swift NIO](https://github.com/apple/swift-nio). Once the request is obtained from the Swift NIO event loop, it uses `GCD` for processing each request, making use of both evented as well as threaded workflow.
+`TeaPotServer` is an HTTP2 server written entirely using [Swift NIO](https://github.com/apple/swift-nio). Once the request is obtained from the Swift NIO event loop, it uses `GCD` for processing each request, making use of both evented as well as threaded workflow.
 
 The server is modelled around REST API, with route handler for `GET`, `POST`, `PUT` and `DELETE`. The server accepts HTTPS connection as well as redirects HTTP connections to HTTPS route.
 
