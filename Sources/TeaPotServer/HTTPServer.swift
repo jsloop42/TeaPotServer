@@ -140,7 +140,7 @@ public class HTTPServer {
             .serverChannelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
             .childChannelInitializer({ channel in  // Set the handlers that are applied to the accepted Channels
                 channel.pipeline.addHandler(BackPressureHandler()).flatMap({ _ in
-                    // Add SSL handler because HTTP/2 is almost always spoken over TLS.
+                    // Configure HTTP 1.1 pipeline
                     channel.pipeline.configureHTTPServerPipeline(withErrorHandling: true).flatMap({ (_) -> EventLoopFuture<Void> in
                         return channel.pipeline.addHandler(HTTPHandler())
                     }).flatMap({ () -> EventLoopFuture<Void> in
