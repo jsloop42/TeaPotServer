@@ -115,4 +115,10 @@ To run the tests, first stop any existing copy of the server and run the test fr
 
 ## Change Logs
 
+v1.1
 
+- Update swift metrics package version
+
+v1.0
+
+- Initial release
