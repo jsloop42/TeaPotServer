@@ -15,7 +15,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio-extras.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-nio-transport-services.git", from: "1.1.1"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.1.0"),
-        .package(url: "https://github.com/apple/swift-metrics.git", from: "1.1.0"),
+        .package(url: "https://github.com/apple/swift-metrics.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/mongodb/mongo-swift-driver.git", from: "0.1.3"),
     ],
     targets: [

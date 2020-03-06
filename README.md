@@ -16,6 +16,12 @@ sudo mkdir tea-pot-server
 sudo chown username:staff tea-pot-server
 ````
 
+Install mongoc driver for FoundationDB document layer usage.
+
+```
+brew install libmongoc
+```
+
 ## Curl with HTTP2
 
 Install a version of curl that supports HTTP2. With homebrew, use the command below.
@@ -105,4 +111,8 @@ To run the tests, first stop any existing copy of the server and run the test fr
 
 ## Project Goal
 
-- Illustrate the use of Swift NIO  in developing a production grade HTTP2 server with logging.
+- Illustrate the use of Swift NIO in developing a production grade HTTP2 server with logging.
+
+## Change Logs
+
+
